@@ -3,7 +3,48 @@
 #variables
 cntr=0
 req=5
-file="/home/tgrd/pen/bash/.ntfr01"
+tst_file=".ntfr01"
+md_path="modules/"
+index_path="${md_path}index.txt"
+
+#module/script runner
+run_mdl() {
+	local mdl="${md_path}${ld_md}"
+	local arg="${arg[@]}"
+
+	bash "${mdl}" "${arg[@]}"
+
+}
+
+#func for searching the index file for modules/scripts
+src_mdl() {
+	local md_name="$1"
+	
+	echo "$(grep "^$md_name" "$index_path")"
+}
+
+
+#module/script loader
+scrp_ld() {
+	local script="$1"
+	
+	#to see if the script actually exists
+	entry="$(grep -E "$script" "$index_path")"
+
+	if [ -z "$entry" ]; then
+		echo "Script/Module doesn't exist"
+	fi
+
+	path="$(echo "$entry" | awk '{ print $2 }')"
+
+	if [ -z "$path" ]; then
+		echo "Script/Module is indexed but not found at $path"
+	fi
+
+	ld_md="$path"
+
+}
+
 
 #cmd handler
 cmd_hdlr() {
@@ -19,16 +60,16 @@ cmd_hdlr() {
 			help_menu
 			;;
 		run)
-			run_mdl "$arg[@]"
+			run_mdl "${arg[@]}"
 			;;
 		use)
-			scrp_ld "$arg[@]"
+			scrp_ld "${arg[@]}"
 			;;
 		search)
-			src_scrp "$arg[@]"
+			src_mdl "${arg[@]}"
 			;;
 		*)
-			echo "Not a real $cmd or $arg[@]"
+			echo "Not a real $cmd or ${arg[@]}"
 	esac
 }
 
@@ -44,11 +85,12 @@ help_menu() {
 #menu
 menu() {
 	while true; do
-		echo -n "fw# "
+		echo -n "fw(${ld_md})# "
 		read -r cmd arg
-		set -- $line
 		
-		cmd_hdlr "$cmd" "$arg[@]"
+		[[ -z "$cmd" ]] && continue
+
+		cmd_hdlr "$cmd" "${arg[@]}"
 
 	done
 }
@@ -56,7 +98,7 @@ menu() {
 
 #check if its first run
 t_first_run() {
-	if [ -f "$file" ]; then
+	if [ -f "$tst_file" ]; then
 		echo "Test file found"
 	else
 		app_chk
@@ -68,7 +110,7 @@ app_chk() {
 	apps=("wireshark" "git" "python" "nmap" "aircrack-ng")
 
 	echo "Testing for apps"
-	
+		
 	for app in "${apps[@]}"; do
 		if which "$app" &>/dev/null; then
 			((cntr++))
@@ -85,9 +127,10 @@ app_chk() {
 		fi
 		sleep 1
 	done
+	
 	if [ "$cntr" -ge "$req" ]; then
 		echo "Testing done all apps are installed($cntr/$req)"
-		touch "$file"
+		touch "$tst_file"
 	else
 		echo "Something went wrong some apps are not installed($cntr/$req)"
 	fi
