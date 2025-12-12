@@ -1,0 +1,4 @@
+ntscan scanners/ntscan
+wifiscan scanners/wifiscan
+revshell payloads/revshell
+sshenum auxylary/sshenum
