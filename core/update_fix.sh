@@ -6,9 +6,9 @@ fw_fix() {
 	if [[ -n "$chngs" ]]; then
 		echo "There is something wrong"
 		echo "Fixing broken files"
-		echo "This will reset all files to the latest version"
-		read -e -n "Do you want to continue(Y/n) " -i "y" ans
-		if [[ "${ans}" == "n" ]]; then
+		echo "This will reset all core files to the latest version"
+		read -e -p "Do you want to continue(Y/n) " -i "y" ans
+		if [[ "${ans}" == ^[Nn]$ ]]; then
 			echo "Ok not fixing the files"
 		else
 			git fetch origin
@@ -17,7 +17,7 @@ fw_fix() {
 	else
 		echo "All files are good"
 	fi
-	rm ${crnth}
+	rm -f "$crnth"
 }
 
 #func to update/fix the cli

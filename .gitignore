@@ -1,4 +1,5 @@
 .ntfr01
 *.zip
 *.img
-.manifest
+.manifest.txt
+.histfile
