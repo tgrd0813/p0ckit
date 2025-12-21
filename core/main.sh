@@ -24,6 +24,7 @@ cmd_hdlr() {
 				scrp_ld "${arg[@]}"
 			fi
 			;;
+		crtmnfst) find core -type f ! -name "manifest.txt" -execsha256sum {} + | sort > "${mnfstf}"
 		search) src_mdl "${arg[@]}";;
 		update) fw_upd;;
 		fix) fw_fix;;
@@ -62,14 +63,21 @@ t_first_run() {
 	if [ -f "$tst_file" ]; then
 		echo "Test file found"
 	else
-		app_chk "${1}"
+		app_chk "${@}"
 		slnk_stp
 	fi
 
 	if [[ ! -f "${mnfstf}" ]]; then
-		find . -type f ! -path "./.git/" ! -name "${mnfstf}" -exec sha256sum {} + | sort > "${mnfstf}"
+		find core -type f ! -name "manifest.txt" -exec sha256sum {} + | sort > "${mnfstf}"
 	else
 		echo "Found manifest file"
+	fi
+
+	if [[ "$@" == "--crt-manifest" ]]; then
+		echo Creating manifest file...
+		sleep 1
+		find core -type f ! -name "manifest.txt" -exec sha256sum {} + | sort > "${mnfstf}"
+		echo Manifest file created
 	fi
 		
 }
@@ -80,6 +88,7 @@ help_menu() {
 	echo "help -- This help menu"
 	echo "use -- Use a module/script (modules by name | scritps by path)"
 	echo "fix -- Fix the tool if something is broken (if you have made chages to the tool they will not be saved)"
+	echo "crtmnfst -- Create manifest manually (sorry for the wierd command)"
 	echo "update -- Update the tool to the lates release"
 	echo "serach -- Search a module/script by name or path"
 	echo "exit/quit -- to quit the script"

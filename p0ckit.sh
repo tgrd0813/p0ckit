@@ -8,7 +8,6 @@ source "$script_hm/core/pkg_mgr_utils.sh"
 source "$script_hm/core/run_mdl.sh"
 source "$script_hm/core/update_fix.sh"
 source "$script_hm/core/banner.sh"
-source "$script_hm/core/autocompl.sh"
 
 
 banner

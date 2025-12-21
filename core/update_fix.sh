@@ -1,7 +1,7 @@
 #func to check the hash value and if different then fix broken/corupted files
 fw_fix() {
-	local crnth=".crntmnfst.txt"
-	find . -type f ! -path "./.git/*" ! -name "${mnfstf}" -exec sha256sum {} + | sort > ${crnth}
+	local crnth="core/.crntmnfst.txt"
+	find core -type f ! -name "${crnth}"! -name "${mnfstf}" -exec sha256sum {} + | sort > ${crnth}
 	chngs="$(diff $mnfstf $crnth)"
 	if [[ -n "$chngs" ]]; then
 		echo "There is something wrong"
