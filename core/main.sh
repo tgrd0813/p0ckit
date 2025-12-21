@@ -25,6 +25,7 @@ cmd_hdlr() {
 			fi
 			;;
 		crtmnfst) find core -type f ! -name "manifest.txt" -execsha256sum {} + | sort > "${mnfstf}"
+			;;
 		search) src_mdl "${arg[@]}";;
 		update) fw_upd;;
 		fix) fw_fix;;
