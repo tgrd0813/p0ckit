@@ -24,8 +24,7 @@ cmd_hdlr() {
 				scrp_ld "${arg[@]}"
 			fi
 			;;
-		crtmnfst) find core -type f ! -name "manifest.txt" -exec sha256sum {} + | sort > "${mnfstf}"
-			;;
+		crtmnfst) crt_mnfst;;
 		search) src_mdl "${arg[@]}";;
 		update) fw_upd;;
 		fix) fw_fix;;
