@@ -53,7 +53,7 @@ pkg_mgr_dct() {
 #installs any pkg/app not found
 pkg_install() {
 	local pkg="$1"
-	case "pkg_mgr" in
+	case "$pkg_mgr" in
 		apt) sudo apt install -y "$pkg";;
 		pacman) sudo pacman -S --noconfirm "$pkg";;
 		dnf) sudo dnf install -y "$pkg";;

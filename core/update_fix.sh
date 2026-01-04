@@ -17,7 +17,7 @@ fw_fix() {
 	else
 		echo "All files are good"
 	fi
-	#rm -f "$crnth"
+	rm -f "$crnth"
 }
 
 #func to update/fix the cli
@@ -35,6 +35,7 @@ crt_mnfst() {
 		read -p "Are you sure you want to recreate the manifest(y/N)" -i "n" ans
 		if [[ "$ans" == "y" ]]; then
 			echo Ok creating manifest
+			cp $mnfstf manifest.old
 			find core -type f ! -name "manifest.txt" -exec sha256sum {} + | sort > "${mnfstf}"
 			sleep 1
 			echo manifest created

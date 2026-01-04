@@ -28,6 +28,7 @@ cmd_hdlr() {
 		search) src_mdl "${arg[@]}";;
 		update) fw_upd;;
 		fix) fw_fix;;
+		hack|no) no_res 1;;
 		*)
 			if command -v "${cmd}" >/dev/null 2>&1; then
 				$cmd $arg
@@ -64,7 +65,6 @@ t_first_run() {
 		echo "Test file found"
 	else
 		app_chk "${@}"
-		slnk_stp
 	fi
 
 	if [[ ! -f "${mnfstf}" ]]; then
@@ -93,4 +93,14 @@ help_menu() {
 	echo "serach -- Search a module/script by name or path"
 	echo "exit/quit -- to quit the script"
 
+}
+
+#small something coz why not
+no_res() {
+	if [[ $@ == 1 ]]; then
+		res="$(curl -s http://${ip}:3000/no | jq -r '.reason')"
+		echo -e "No: $res"
+	elif [[ $@ == 0 ]]; then
+		echo "$(curl -s http://${ip}:3000/no | jq -r '.reason')"
+	fi
 }
