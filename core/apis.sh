@@ -4,7 +4,7 @@ naas() {
     if [[ ! -d "${script_hm}/.no-as-a-service" ]]; then
         read -e -p "NaaS (no-as-a-service) is not installed, do you want to install it (Y/n)? " ans
         ans=${ans:-y}
-        ans=${ans:,,}
+        ans=${ans,,}
         if [[ "$ans" != "y" ]]; then
             echo Ok not installing naas
         else
@@ -12,10 +12,10 @@ naas() {
         fi
     else
         if [[ "$cmd" == "start" ]]; then
-            (
-                cd .no-as-a-service
+            $(
+                cd .no-as-a-service 
                 npm start
-            ) &
+            ) & 
             api_pid=$!
         fi
     fi

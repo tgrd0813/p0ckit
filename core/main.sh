@@ -15,6 +15,7 @@ cmd_hdlr() {
 			fi
 			;;
 		help) help_menu;;
+		test) app_chk;;
 		run) run_mdl "${arg[@]}";;
 		use)
 			ld_md=""
@@ -86,6 +87,7 @@ t_first_run() {
 help_menu() {
 	echo "Help menu:"
 	echo "help -- This help menu"
+	echo "test -- Test for apps and dependencies"
 	echo "use -- Use a module/script (modules by name | scritps by path)"
 	echo "fix -- Fix the tool if something is broken (if you have made chages to the tool they will not be saved)"
 	echo "crtmnfst -- Create manifest manually (sorry for the wierd command)"
@@ -98,9 +100,9 @@ help_menu() {
 #small something coz why not
 no_res() {
 	if [[ $@ == 1 ]]; then
-		res="$(curl -s http://${ip}:3000/no | jq -r '.reason')"
+		res="$(curl -s http://127.0.0.1:3000/no | jq -r '.reason')"
 		echo -e "No: $res"
 	elif [[ $@ == 0 ]]; then
-		echo "$(curl -s http://${ip}:3000/no | jq -r '.reason')"
+		echo "$(curl -s http://127.0.0.1:3000/no | jq -r '.reason')"
 	fi
 }

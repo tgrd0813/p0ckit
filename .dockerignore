@@ -6,6 +6,3 @@ Dockerfile
 __pycache__/
 node_modules/
 *.log
-*.histfile
-*.ntfr01
-core/manifest.txt

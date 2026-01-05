@@ -15,8 +15,10 @@ app_chk() {
 			else
 				echo "$app is not installed"
 				echo "Do you want to install $app (y/N)"
-				read -p "=> " -i "n" ans
-				if [[ "$ans" = ^[Yy]$ ]]; then
+				read -p "=> " ans
+				ans=${ans:-n}
+				ans=${ans,,}
+				if [[ "$ans" = y ]]; then
 					pkg_install "$app"
 					((cntr++))
 				else

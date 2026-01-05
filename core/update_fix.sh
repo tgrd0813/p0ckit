@@ -8,6 +8,8 @@ fw_fix() {
 		echo "Fixing broken files"
 		echo "This will reset all core files to the latest version"
 		read -e -p "Do you want to continue(Y/n) " ans
+		ans=${ans:-y}
+		ans=${ans,,}
 		if [[ "${ans}" == "n" ]]; then
 			echo "Ok not fixing the files"
 		else	
@@ -32,7 +34,9 @@ fw_upd() {
 crt_mnfst() {
 	if [[ -f "${mnfstf}" ]]; then
 		echo Manifest already exists
-		read -p "Are you sure you want to recreate the manifest(y/N)" -i "n" ans
+		read -p "Are you sure you want to recreate the manifest(y/N)" ans
+		ans=${ans:-n}
+		ans=${ans,,}
 		if [[ "$ans" == "y" ]]; then
 			echo Ok creating manifest
 			cp $mnfstf manifest.old

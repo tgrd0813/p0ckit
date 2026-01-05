@@ -1,32 +1,42 @@
 # p0ckit
-p0ckit is a small Bash-based tool that manages and runs modules/scripts.
+p0ckit is a Bash-based framework that helps you manage and runs modules/scripts.
+It comes with some modules/scripts but you are free to add/modify as you want
+(be carefull right now it doesn't have the function to restore them)
+# Using the fw
 
-## Docker
-
-This repository includes a `Dockerfile` so you can run `p0ckit` inside a container.
-
-### Build the image
-
+## linux
+To use the fw you just need to run:
 ```bash
-docker build -t p0ckit:latest .
+bash p0ckit.sh
+```
+OR
+```bash
+chmod +x p0ckit.sh
+./p0ckit.sh
 ```
 
-### Run (interactive)
+## Windows/Docker
+To run the fw in Windows you need to have Docker installed.
+After you install it you can ether use the GUI or the commands below 
 
-Basic interactive run (mount current repo, optional):
+## Build the image
 
 ```bash
-docker run --rm -it -v "$(pwd):/opt/p0ckit" p0ckit:latest
+docker build -t p0ckit .
 ```
-
-If your workflows use network scanning (e.g., `nmap`) you may want to run with host networking and network capabilities (Linux only):
-
+## Run the image
 ```bash
-sudo docker run --rm -it --network host --cap-add=NET_RAW --cap-add=NET_ADMIN -v "$(pwd):/opt/p0ckit" p0ckit:latest
+docker run -i -t p0ckit
 ```
 
 Notes:
 - The image is based on Debian and includes `bash`, `git`, `python3`, `nmap`, `npm`, `curl`, and `jq`.
 - Some features (like system package installation via `pkg_install`) require a package manager and/or `sudo`; the container runs as root by default for simplicity.
 
-ps: this is readme.md file is ai generated I will update it when I finish most of the tool and add some modules
+# Modules
+Right now there is only one it has its scanners/ntscan (even tho in the index file are more those where just to test) which just runs nmap with the ip given.
+I plan to add more in the future
+
+# To do:
+- add more modules
+- add a show options and better help menu for modules
