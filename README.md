@@ -2,10 +2,25 @@
 p0ckit is a Bash-based framework that helps you manage and runs modules/scripts.
 It comes with some modules/scripts but you are free to add/modify as you want
 (be carefull right now it doesn't have the function to restore them)
-# Using the fw
+# Downloading
+To downloading the framework you will need git installed for both Linux/Windows
+You can download it from [here](https://git-scm.com/install)
+If you already downloaded the repo [go here](#using-the-framework)
+## Linux
+To download the framework in linux just run the commands below
+```bash
+git clone https://github.com/tgrd0813/p0ckit.git
+cd p0ckit
+```
+## Windows
+```bash
+git clone https://github.com/tgrd0813/p0ckit.git
+cd p0ckit
+```
 
+# Using the framework
 ## linux
-To use the fw you just need to run:
+To use the framework you just need to run:
 ```bash
 bash p0ckit.sh
 ```
@@ -30,14 +45,9 @@ docker build -t p0ckit .
 docker run -i -t p0ckit
 ```
 
-Notes:
+Note:
 - The image is based on Debian and includes `bash`, `git`, `python3`, `nmap`, `npm`, `curl`, and `jq`.
-- Some features (like system package installation via `pkg_install`) require a package manager and/or `sudo`; the container runs as root by default for simplicity.
 
 # Modules
-Right now there is only one it has its scanners/ntscan (even tho in the index file are more those where just to test) which just runs nmap with the ip given.
+Right now there is only one it's scanners/ntscan (even tho in the index file are more, those are just to test) which just runs nmap with the ip given.
 I plan to add more in the future
-
-# To do:
-- add more modules
-- add a show options and better help menu for modules
