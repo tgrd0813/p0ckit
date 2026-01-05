@@ -36,7 +36,7 @@ app_chk() {
 	else
 		echo "Something went wrong some apps are not installed($cntr/$req)"
 	fi
-
+	cntr=0
 }
 
 #detects distro pkg manager
