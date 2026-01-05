@@ -17,7 +17,8 @@ chmod +x p0ckit.sh
 
 ## Windows/Docker
 To run the fw in Windows you need to have Docker installed.
-After you install it you can ether use the GUI or the commands below 
+After you install it you can ether use the GUI or the commands below
+(they are the same if you want to run the docker image in linux)
 
 ## Build the image
 
