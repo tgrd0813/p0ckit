@@ -24,6 +24,9 @@ RUN apt-get update \
 WORKDIR /opt/p0ckit
 COPY . /opt/p0ckit
 
+#this like is just coz windows wants to be a stupid bitch
+RUN find /opt/p0ckit -type f -exec sed -i 's/\r//g' {} +
+
 # Ensure entry script is executable
 RUN chmod +x /opt/p0ckit/p0ckit.sh
 
