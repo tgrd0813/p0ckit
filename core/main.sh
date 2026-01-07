@@ -9,9 +9,23 @@ cmd_hdlr() {
 		exit|quit|q)
 			if [[ -z "$mdl" ]]; then
 				echo "Ok quitting..."
+				naas stop
+				if [[ -z "$tmp_op" ]]; then
+					:
+				else
+					rm -f $tmp_op
+				fi
 				exit 0
 			else
 				ld_md=""
+				rm -f $tmp_op
+			fi
+			;;
+		set)
+			if [[ -z "$mdl" ]]; then
+				echo "you haven't selected any module/sccript"
+			else
+				set_opt ${arg[@]}
 			fi
 			;;
 		help) help_menu;;
@@ -23,6 +37,19 @@ cmd_hdlr() {
 				echo "No module/script specified please specify one"
 			elif [[ "${arg[@]}" ]]; then
 				scrp_ld "${arg[@]}"
+			fi
+			;;
+		show)
+			local op=$arg
+			if [[ "$op" == "options" ]]; then
+				sh_op
+			elif [[ "$op" == "info" ]]; then
+				sh_info
+			elif [[ -z "$op" ]]; then
+				echo "Show: you need to specify a function options/info"
+			else
+				echo "Show: Invalid option $op"
+				echo "Show: Valid option are options/info"
 			fi
 			;;
 		crtmnfst) crt_mnfst;;
@@ -88,6 +115,8 @@ help_menu() {
 	echo "Help menu:"
 	echo "help -- This help menu"
 	echo "test -- Test for apps and dependencies"
+	echo "set -- Set variables for module/script as rhost/port"
+	echo "show -- Show info/options about a module/script"
 	echo "use -- Use a module/script (modules by name | scritps by path)"
 	echo "fix -- Fix the tool if something is broken (if you have made chages to the tool they will not be saved)"
 	echo "crtmnfst -- Create manifest manually (sorry for the wierd command)"

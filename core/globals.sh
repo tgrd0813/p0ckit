@@ -3,6 +3,7 @@ HISTFILE="$script_hm/.histfile"
 HISTSIZE=1000
 HISTFILESIZE=2000
 mnfstf="$script_hm/core/manifest.txt"
+tmp_op="$script_hm/core/.op.tmp"
 fw_name="p0ckit"
 apps=("git" "python3" "nmap" "npm")
 nt="$1"

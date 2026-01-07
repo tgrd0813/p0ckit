@@ -17,6 +17,7 @@ cd p0ckit
 git clone https://github.com/tgrd0813/p0ckit.git
 cd p0ckit
 ```
+then [go here](#windows)
 
 # Using the framework
 ## linux

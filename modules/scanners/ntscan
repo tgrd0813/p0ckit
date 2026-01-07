@@ -1,3 +1,19 @@
 #!/bin/bash
-
-nmap -sV $1
+#str_op
+#   rhost (required)
+#   port    (option but -p before the port is needed)
+#end_op
+#str_info
+#   this is a script that just runnes nmap -sV with the given ip
+#   you run this using "run ip/host " and optional "run ip/host -p port"
+#end_info
+#
+if [[ -z "$rhost" ]]; then
+    echo "Please provide a target"
+else
+    if [[ -z "$port" ]]; then
+        nmap -sV $rhost
+    else
+        nmap -sV $rhost -p $port
+    fi
+fi

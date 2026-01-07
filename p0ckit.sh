@@ -16,4 +16,3 @@ naas start
 t_first_run "${1}"
 no_res 0
 menu
-naas stop

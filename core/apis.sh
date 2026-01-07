@@ -12,15 +12,15 @@ naas() {
         fi
     else
         if [[ "$cmd" == "start" ]]; then
-            $(
-                cd .no-as-a-service 
-                npm start
+            (
+                cd .no-as-a-service || exit 1
+                nohup npm start >/dev/null 2>&1 &
             ) & 
             api_pid=$!
         fi
     fi
 
     if [[ "$cmd" == "stop" ]]; then
-        kill $api_pid
+        lsof -ti :3000 | xargs kill
     fi   
 }
