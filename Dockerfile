@@ -16,6 +16,7 @@ RUN apt-get update \
         curl \
         jq \
         sudo \
+        lsof \
         ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
