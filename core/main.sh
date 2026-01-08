@@ -121,7 +121,7 @@ help_menu() {
 	echo "fix -- Fix the tool if something is broken (if you have made chages to the tool they will not be saved)"
 	echo "crtmnfst -- Create manifest manually (sorry for the wierd command)"
 	echo "update -- Update the tool to the lates release"
-	echo "serach -- Search a module/script by name or path"
+	echo "search -- Search a module/script by name or path"
 	echo "exit/quit -- to quit the script"
 
 }

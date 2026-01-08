@@ -32,7 +32,7 @@ chmod +x p0ckit.sh
 ```
 
 ## Windows/Docker
-To run the fw in Windows you need to have Docker installed.
+To run the framework in Windows you need to have Docker installed.
 After you install it you can ether use the GUI or the commands below
 (they are the same if you want to run the docker image in linux)
 
@@ -50,5 +50,5 @@ Note:
 - The image is based on Debian and includes `bash`, `git`, `python3`, `nmap`, `npm`, `curl`, and `jq`.
 
 # Modules
-Right now there is only one it's scanners/ntscan (even tho in the index file are more, those are just to test) which just runs nmap with the ip given.
-I plan to add more in the future
+Right now there is only one it's scanners/ntscan (even tho in the index file are more, those are just for tests) which just runs nmap with the ip given.
+I plan to add more in the future.
