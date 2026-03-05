@@ -65,6 +65,7 @@ git pull origin main
 ## Windows
 if you use git bash is the same as in linux
 if you use docker you will need to run the update.py file
+
 Notes:
 - you won't be able to use the update/fix commands in docker since it's not persistent
 - the .py file ask if you want it to rebuild the docker container
