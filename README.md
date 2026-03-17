@@ -1,7 +1,7 @@
 # p0ckit
 p0ckit is a Bash-based framework that helps you manage and runs modules/scripts.
 It comes with some modules/scripts but you are free to add/modify as you want
-(be carefull right now it doesn't have the function to restore them)
+(be careful right now it doesn't have the function to restore them)
 # Downloading
 To downloading the framework you will need git installed for both Linux/Windows
 You can download it from [here](https://git-scm.com/install)
@@ -35,7 +35,7 @@ chmod +x p0ckit.sh
 ```
 
 ## Windows/Docker
-> Note if you are serious about cybersecurity/hacking or actively using windows  
+> Note if you are serious about cybersecurity/hacking or actively learning on windows  
 > You should really reconsider the life choices you made  
 > But I still added some workarounds for you too, not my pleasure but you're welcome  
 
@@ -62,7 +62,7 @@ run the command below in the framework
 ```bash
 update
 ```
-OR manualy
+OR manually
 ```bash
 git pull origin main
 ```
@@ -81,5 +81,6 @@ I plan to add more in the future but I will try to finish the ones it has.
 Note: in the index file are more modules used for testing
 
 # Important Notes
-> Even tho I made some workarounds for windows pls just don't use windows at least use a VM.  
+> Even tho I made some workarounds for windows please just don't use windows at least use a VM.  
 > VMware workstation pro is free now you have no reasons not to use linux.  
+

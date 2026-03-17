@@ -3,3 +3,4 @@
 *.img
 .manifest.txt
 .histfile
+manifest.old
