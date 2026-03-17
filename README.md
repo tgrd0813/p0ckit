@@ -74,3 +74,4 @@ ps: the update.bat file is ai generated
 # Modules
 Right now there is only one it's scanners/ntscan (even tho in the index file are more, those are just for tests) which just runs nmap with the ip given.
 I plan to add more in the future.
+Added wifi_attack module which uses aircrack-ng suite to help with wifi attacks like recon deauth and handshake capture but it's still in development
