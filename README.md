@@ -21,7 +21,7 @@ OR
 You can download the .zip file from [here](https://github.com/tgrd0813/p0ckit/archive/refs/heads/main.zip)
 then [go here](#windows)
 
-ps: you will not have .git folder. that means that you will not be able to update the tool using the script or in tool commands
+ps: you will not have .git folder. that means that you will not be able to update the tool using the script or tool commands
 # Using the framework
 ## linux
 To use the framework you just need to run:
@@ -35,6 +35,9 @@ chmod +x p0ckit.sh
 ```
 
 ## Windows/Docker
+> Note if you are serious about cybersecurity/hacking or actively using windows
+> You should really reconsider the life choices you made
+> But I still added some workarounds for you too, not my pleasure but you're welcome
 To run the framework in Windows you need to have [Docker](https://www.docker.com/products/docker-desktop/) installed.
 After you install it you can either use the GUI or the commands below
 (they are the same if you want to run the docker image in linux)
@@ -72,6 +75,10 @@ Notes:
 ps: the update.bat file is ai generated
 
 # Modules
-Right now there is only one it's scanners/ntscan (even tho in the index file are more, those are just for tests) which just runs nmap with the ip given.
-I plan to add more in the future.
-Added wifi_attack module which uses aircrack-ng suite to help with wifi attacks like recon deauth and handshake capture but it's still in development
+Right now it has ntscan which is an nmap wrapper and wifi_attack which for now can only scan and send deauth packets.
+I plan to add more in the future but I will try to finish the ones it has.
+Note: in the index file are more modules used for testing
+
+# Important Notes
+> Even tho I made some workarounds for windows pls just don't use windows at least use a VM
+> VMware workstation pro is free now you have no reasons not to use linux
