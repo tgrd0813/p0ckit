@@ -1,6 +1,2 @@
-ntscan scanners/ntscan
-ntsa scanners/ntsa
-wifi_atk scanners/wifi_attack
-wifiscan scanners/wifiscan
-revshell payloads/revshell
-sshenum auxylary/sshenum
+ntscan core/ntscan
+wifi_atk core/wifi_attack

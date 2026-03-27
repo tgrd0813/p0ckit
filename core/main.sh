@@ -35,7 +35,7 @@ cmd_hdlr() {
 				unset_opt ${arg[@]}
 			fi
 			;;
-		help) help_menu;;
+		help) help_menu ${arg};;
 		test) app_chk;;
 		run) run_mdl "${arg[@]}";;
 		use)
@@ -119,18 +119,28 @@ t_first_run() {
 
 #help menu
 help_menu() {
-	echo "Help menu:"
-	echo "help -- This help menu"
-	echo "test -- Test for apps and dependencies"
-	echo "set -- Set variables for module/script as rhost/port"
-	echo "show -- Show info/options about a module/script"
-	echo "use -- Use a module/script (modules by name | scritps by path)"
-	echo "fix -- Fix the tool if something is broken (if you have made chages to the tool they will not be saved)"
-	echo "crtmnfst -- Create manifest manually (sorry for the weird command)"
-	echo "update -- Update the tool to the lates release"
-	echo "search -- Search a module/script by name or path"
-	echo "exit/quit -- to quit the script"
-
+	if [[ $arg = "a" || $arg = "-a" ]]; then
+		echo "Help menu:"
+		echo "	help -- This help menu"
+		echo "	test -- Test for apps and dependencies"
+		echo "	set -- Set variables for module/script as rhost/port"
+		echo "	show -- Show info/options about a module/script"
+		echo "	use -- Use a module/script (modules by name | scritps by path)"
+		echo "	fix -- Fix the tool if something is broken (if you have made chages to the tool they will not be saved)"
+		echo "	crtmnfst -- Create manifest manually (sorry for the weird command)"
+		echo "	update -- Update the tool to the lates release"
+		echo "	search -- Search a module/script by name or path"
+		echo "	exit/quit/q -- to quit the script"
+	else
+		echo "Help menu:"
+		echo "	help -- This help menu"
+		echo "	set -- Set variables for module/script as rhost/port"
+		echo "	show -- Show info/options about a module/script"
+		echo "	use -- Use a module/script (modules by name | scritps by path)"
+		echo "	fix -- Fix the tool if something is broken (if you have made chages to the tool they will not be saved)"
+		echo "	search -- Search a module/script by name or path"
+		echo "	exit/quit/q -- to quit the script"
+	fi
 }
 
 #small something coz why not

@@ -4,3 +4,5 @@
 .manifest.txt
 .histfile
 manifest.old
+.cap-files/
+wordlists/
