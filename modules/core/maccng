@@ -1,0 +1,105 @@
+#!/bin/bash
+i="$1"
+op="$2"
+opts=("r" "p" "revert")
+
+op_chk() {
+    local tg="$1"
+    shift
+    for it in "$@"; do
+        [[ "$it" == "$tg" ]] && return 0
+    done 
+    return 1
+}
+
+mcc_chk() {
+    local ans
+    if ! command -v macchanger &>/dev/null; then
+        echo "[!] Macchanger is not installed"
+        echo "[?] Do you want to install it?(Y/n)"
+        read -p "=> " ans
+        ans=${ans:-y}
+        ans=${ans,,}
+        if [[ "$ans" != "y" ]]; then
+            echo "[!] As you say!"
+            return 1
+        else
+            echo "[!] Installing macchanger..."
+            if command -v pacman &>/dev/null; then
+                sudo pacman -S macchanger
+            elif command -v apt &>/dev/null; then
+                sudo apt install -y macchanger
+            elif command -v dnf &>/dev/null; then
+                sudo dnf install -y macchanger
+            fi
+        fi
+    fi
+
+}
+
+mac_chg() {
+    if [[ $1 = "1" ]]; then
+        sudo ip link set "$i" down
+        if sudo macchanger -p $i > /dev/null 2>&1; then
+            sudo ip link set "$i" up 
+            return 0
+        else
+            echo "[!] macchanger couldn't revert the mac address"
+            sudo ip link set "$i" down
+            return 1
+        fi
+    else
+	    sudo ip link set "$i" down
+	    if sudo macchanger -r $i > /dev/null 2>&1; then
+		    sudo ip link set "$i" up
+		    return 0
+	    else
+		    echo "[!] macchanger didn't work?"
+		    sudo ip link set "$i" up
+		    return 1
+	    fi
+    fi
+}
+
+chk_mac() {
+	local opt=$1
+	if [[ $opt = 1 ]]; then
+		cmac=$(macchanger -s "$i" | grep -oP "Current MAC:   \K\S+")
+	elif [[ $opt = 2 ]]; then
+		pmac=$(macchanger -s "$i" | grep -oP "Permanent MAC: \K\S+")
+	elif [[ $opt = 3 ]]; then
+		cmac=$(macchanger -s "$i" | grep -oP "Current MAC:   \K\S+")
+		pmac=$(macchanger -s "$i" | grep -oP "Permanent MAC: \K\S+")
+	fi
+}
+
+if [[ -z $i ]]; then
+	echo "[!] No interface specified"
+elif ip link show "$i" > /dev/null 2>&1; then
+    mcc_chk
+	chk_mac 3
+	echo "Current: $cmac"
+	echo "Permanent: $pmac"
+	if [[ $cmac = $pmac ]]; then
+		echo "[!] MAC addresses are the same(C: ${cmac}/P: ${pmac})"
+    fi
+    if op_chk "$op" "${opts[@]}"; then
+        echo "[+] Reverting MAC address..."
+        if mac_chg 1; then
+            chk_mac 3
+            echo "[+] MAC address reverted successfully!"
+            echo "[+] Current: $cmac | Permanent: $pmac"
+        else
+            echo "[!] couldn't revert MAC address!"
+        fi
+    elif mac_chg 0; then
+	    echo "[+] Changing MAC address..."
+		chk_mac 1
+		echo "[+] MAC address successfully"
+		echo "[+] New MAC address: $cmac"
+	else
+		echo "[!] couldn't change MAC address!"
+	fi
+else
+    echo "[!] Interface $i is not connected"
+fi

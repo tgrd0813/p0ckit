@@ -2,7 +2,7 @@
 cmd_hdlr() {
 	local cmd="$1"
 	shift
-	local arg="$@"
+    local arg=("$@")
 	local mdl="${ld_md}"
 
 	case "$cmd" in
@@ -64,7 +64,8 @@ cmd_hdlr() {
 		update) fw_upd;;
 		fix) fw_fix;;
 		hack|no) no_res 1;;
-		*)
+        mac|macchg) mac_mdl "${arg[@]}";;
+        *)
 			if command -v "${cmd}" >/dev/null 2>&1; then
 				$cmd $arg
 			else
@@ -82,7 +83,7 @@ menu() {
 		set -- $line
 		cmd="$1"
 		shift
-		arg="$@"
+		arg=("$@")
 
 		[[ -z "$cmd" ]] && continue
 
@@ -92,6 +93,28 @@ menu() {
 		history -w "$HISTFILE"
 
 	done
+}
+
+mac_mdl() {
+    local ans
+    local args=("$@")
+    local iface=${args[0]}
+
+    if [[ ! -f ${md_path}/core/maccng ]]; then
+        echo "[!] mac changer module not found"
+        echo "[?] Do you want to install it?(Y/n)"
+        read -p "=> " ans
+        ans=${ans:-y}
+        ans=${ans,,}
+        if [[ "$ans" != "y" ]]; then
+            echo "[!] As you say!"
+        else
+            curl -o ${md_path}/core/maccng https://raw.githubusercontent.com/tgrd0813/p0ckit/refs/heads/main/modules/core/maccng
+            bash ${md_path}/core/maccng "${args[@]}"
+        fi
+    else
+        bash ${md_path}/core/maccng "${args[@]}"
+    fi
 }
 
 #check if its first run
@@ -130,6 +153,7 @@ help_menu() {
 		echo "	crtmnfst -- Create manifest manually (sorry for the weird command)"
 		echo "	update -- Update the tool to the lates release"
 		echo "	search -- Search a module/script by name or path"
+        echo "  macchg/mac -- Chages the mac address of the specified interface"
 		echo "	exit/quit/q -- to quit the script"
 	else
 		echo "Help menu:"
@@ -139,6 +163,7 @@ help_menu() {
 		echo "	use -- Use a module/script (modules by name | scritps by path)"
 		echo "	fix -- Fix the tool if something is broken (if you have made chages to the tool they will not be saved)"
 		echo "	search -- Search a module/script by name or path"
+        echo "  macchg/mac -- Chages the mac address of the specified interface"
 		echo "	exit/quit/q -- to quit the script"
 	fi
 }
