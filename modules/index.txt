@@ -1,2 +1,3 @@
 ntscan core/ntscan
 wifi_atk core/wifi_attack
+web_fuzzer core/web_fuzzer

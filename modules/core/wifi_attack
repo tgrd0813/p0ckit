@@ -1,4 +1,5 @@
 #!/bin/bash
+#t last
 #str_op
 #	iface - required
 #	type - required (set the type of the scan you want: recon, deauth, hand_cap)

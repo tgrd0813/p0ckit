@@ -56,6 +56,52 @@ docker run -i -t p0ckit
 Note:
 - The image is based on Debian and includes `bash`, `git`, `python3`, `nmap`, `npm`, `curl`, and `jq`.
 
+# Actually using the script
+Now that p0ckit is installed you will need to start it using the commands from [before](#using-the-framework).  
+After that you can type "help" or "help a/-a" to see the help menu or advanced help menu.  
+Or it you want to jump right in just do "use module-name" to start a module, e.g.  
+```bash
+fw()# use ntscan
+fw(core/ntscan)#
+```
+You now loaded the wanted module.  
+In there you can type "show options/info" to see either one of them.
+```bash
+fw(core/ntscan)# show info
+#str_info
+#   this is a script that just runnes nmap -sV with the given ip and port
+#end_info
+fw(core/ntscan)# show options
+#str_op
+#   rhost   (required)
+#   port    (optional)
+#end_op
+fw(core/ntscan)#
+```
+You can set the options you want by using set key value e.g.  
+```bash
+fw(core/ntscan)# set rhost 192.168.1.1
+Set: rhost => 192.168.1.1
+fw(core/ntscan)# set port 1234
+Set: port => 1234
+fw(core/ntscan)#
+```
+Now that you set the options it's time to run it  
+```bash
+fw(core/ntscan)# run
+Starting Nmap 7.98 ( https://nmap.org ) at 2026-04-04 22:02 +0300
+Nmap scan report for 192.168.1.1
+Host is up (0.0012s latency).
+
+PORT     STATE  SERVICE VERSION
+1234/tcp closed hotline
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 0.80 seconds
+fw(core/ntscan)#
+```
+You now used a module, go try the other ones.  
+
 # Updating
 ## linux
 run the command below in the framework
@@ -71,16 +117,66 @@ if you use git bash is the same as in linux
 if you use docker you will need to run the update.bat file
 
 Notes:
-- you won't be able to use the update/fix commands in docker since it's not persistent
-- the .bat file ask if you want it to rebuild the docker container
+- you shouldn't use the update/fix commands in docker since it's not persistent
+- the .bat file will ask if you want it to rebuild the docker container  
 ps: the update.bat file is ai generated
 
 # Modules
-Right now it has ntscan which is an nmap wrapper and wifi_attack which for now can only scan and send deauth packets.
-I plan to add more in the future but I will try to finish the ones it has.
-Note: in the index file are more modules used for testing
+## Core
+### ntscan
+Is a bash wrapper for nmap.  
+It takes the ip/host (optionally port) and runs "nmap ip -sV"  
+
+### wifi_attack
+This is a more complicated wrapper for aircrack-ng suite.  
+It chains the attacks like recon hand-capture and cracking in one module.  
+You must specify the interface and the attack type for any attack accompanied by it's specific arguments.  
+
+### web_fuzzer
+As the name says it's a python made web fuzzer.  
+It can scan multiple url's and url endpoints.  
+It can do single as well, you can filter the status codes, specify the amount of workers and much more.  
+
+## In work
+### sub_enum
+It's a subdomain enumeration tool made in python.  
+Same as the [web_fuzzer](#web_fuzzer) can scan single or multiple url/subdomains.  
+You can filter through the output, specify the amount of workers and a little bit more.  
+(TLDR; same as the web_fuzzer but for subdomains)
+
+## Creating modules
+You can create your own modules in whatever language you want it only needs three things to work perfectly:  
+-options  
+```
+#str_op
+#    option 1
+#   option 2
+#   etc
+#end_op
+```
+-description
+```
+#str_info
+#   line 1
+#   line 2
+#   etc
+#end_info
+```
+-script/variables
+```
+#t first
+```
+do this for languages/scripts that require to be run first and to give the variables after.  
+```
+#t last
+```
+do this for languages/scripts that require the variables to be set first and then to run the script.  
 
 # Important Notes
 > Even tho I made some workarounds for windows please just don't use windows at least use a VM.  
 > VMware workstation pro is free now you have no reasons not to use linux.  
+
+# Credits
+for the cracking part of the wifi_attack module I use the [crackstation.net](https://crackstation.net) human-only wordlist.  
+as a small nice easter egg I added naas ([no-as-a-service](https://github.com/hotheadhacker/no-as-a-service)) for fun.  
 

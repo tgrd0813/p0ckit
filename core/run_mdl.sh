@@ -65,7 +65,12 @@ run_mdl() {
 			chmod +x "$mdl"
 		fi
 	else
-		env $mdl_var $mdl
+        local t=$(grep -oP "#\s*t \K\S+" "$mdl")
+        if [[ "$t" == "last" ]]; then
+		    env $mdl_var $mdl
+        elif [[ "$t" == "first" ]]; then
+            env $mdl $mdl_var
+        fi
 	fi
 	
 

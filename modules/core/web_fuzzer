@@ -1,0 +1,160 @@
+#!/usr/bin/env python3
+#t first
+#str_op
+#   required:
+#       --url | --uw / --url-wordlist
+#       -e / --endpoint | -w / --wordlist
+#   optional:
+#       -f / --filter 
+#       -t / --timeout 
+#       -d / --delay 
+#
+#   for more use "set -h/--help something" (it will work but the key needs a value to register it)
+#end_op
+#str_info
+#   this script is a web fuzzer made in python that helps try endpoint's and url's giving the status code e.g. 200
+#end_info
+import argparse
+import requests
+from concurrent.futures import ThreadPoolExecutor as TPL
+from threading import Lock as lk
+import threading 
+import time
+import random
+
+stop_event = threading.Event()
+
+parser = argparse.ArgumentParser(description="p0ckit fuzzer")
+
+group = parser.add_mutually_exclusive_group(required=True)
+group.add_argument("--url", help="Specify the url to scan")
+group.add_argument("--uw", "--url-wordlist", help="Specify the list of url's to scan")
+
+parser.add_argument("-w", "--wordlist", nargs="?", const="test123.txt", help="Specify the wordlist to use")
+parser.add_argument("-e", "--endpoint", nargs="+", help="Specify the endpoint to check for")
+parser.add_argument("-f", "--filter", nargs="+", help="filteres trough the output codes and only outputs the one/s you want")
+parser.add_argument("-o", "--output", nargs="?", const="output.txt", help="Specify the file to save the output")
+parser.add_argument("-t", "--timeout", nargs="?", default=None, const=5, type=int, help="Set the timeout time")
+parser.add_argument("-d", "--delay", nargs="?", const=2, type=int, help="Set the delay between requests")
+parser.add_argument("-wr", "--workers", nargs="?", default=20, const=35, type=int, help="Set the number of workers to use")
+parser.add_argument("-ua", "--user-agent", nargs="+", default=["python-requests/2.x.x"], help="set custom user agent")
+parser.add_argument("-uaf", "--user-agent-file", nargs="?", help="Specify the file for the user agent")
+parser.add_argument("--no-redirect", nargs="?", default=True, const=None, help="If set it won't follow redirects")
+
+args = parser.parse_args()
+
+if args.user_agent_file:
+    with open(args.user_agent_file, "r") as f:
+        ua_list = f.read().splitlines()
+else:
+    ua_list = None
+
+
+url = args.url
+urlw = args.uw
+out = args.output
+tm = args.timeout
+dl = args.delay
+wr = args.workers
+redir = args.no_redirect
+
+plk = lk()
+
+def endp_chk(endp):
+    if endp.startswith(("/")):
+        return endp
+    else:
+        return "/" + endp
+
+def url_chk(url):
+    if url.startswith(("https://", "http://")):
+        return url
+    try:
+        requests.get("https://" + url, timeout=tm)
+        return "https://" + url
+    except requests.exceptions.RequestException:
+        return "http://" + url
+
+def url_end_chk(url, endp="/"):
+    if stop_event.is_set():
+        return
+    try:
+        ua = random.choice(ua_list).removeprefix("User-Agent: ") if ua_list else " ".join(args.user_agent).removeprefix("User-Agent: ")
+        headers = {"User-Agent": ua}
+        url = url_chk(url)
+        endp = endp_chk(endp)
+        furl = url + endp if endp else url
+        r = requests.get(furl, timeout=tm, headers=headers, allow_redirects=redir)
+        s = r.status_code
+        if args.filter:
+            fl = args.filter
+            if str(s) in fl:
+                with plk:
+                    print(f"Url: {furl} responded with code [{s}]")
+                    if args.output:    
+                        with open(out, "a") as f:
+                            f.write(f"Url: {url} responded with code [{s}]\n")
+        else:
+            with plk:
+                print(f"Url: {furl} responded with code [{s}]")
+                if args.output:
+                    with open(out, "a") as f:
+                        f.write(f"Url: {furl} responded with code [{s}]\n")
+    except requests.exceptions.RequestException as e:
+        with plk:
+            furl = url + endp if endp else url
+            print(f"Url: {furl} gave this error {e}")
+
+def one_url(url, wordlist=None):
+    if args.endpoint:
+        with TPL(max_workers=wr) as execut:
+            for endp in args.endpoint:
+                if args.delay:
+                    time.sleep(dl)
+                execut.submit(url_end_chk, url, endp)
+    elif wordlist:
+        with TPL(max_workers=wr) as execut:
+            with open(wordlist, "r") as f:
+                for l in f:
+                    endp = l.strip()
+                    if args.delay:
+                        time.sleep(dl)
+                    execut.submit(url_end_chk, url, endp)
+    else:
+        url_end_chk(url)
+
+def multy_url(urlw, wordlist=None):
+    if args.endpoint:
+        with TPL(max_workers=wr) as execut:
+            with open(urlw, "r") as f:
+                for l in f:
+                    url = l.strip()
+                    for endp in args.endpoint:
+                        if args.delay:
+                            time.sleep(dl)
+                        execut.submit(url_end_chk, url, endp)
+    elif wordlist is None:
+        with TPL(max_workers=wr) as execut:
+            with open(urlw, "r") as f:
+                for l in f:
+                    url = l.strip()
+                    if args.delay:
+                        time.sleep(dl)
+                    execut.submit(url_end_chk, url)
+    else:
+        with TPL(max_workers=wr) as execut:
+            with open(urlw, "r") as f:
+                for l in f:
+                    url = l.strip()
+                    if args.delay:
+                        time.sleep(dl)
+                    execut.submit(one_url, url, wordlist)
+try:
+    if args.url:
+        one_url(url, args.wordlist)
+    elif args.uw:
+        multy_url(urlw, args.wordlist)
+except KeyboardInterrupt:
+    stop_event.set()
+    print("Ok quitting...")
+    quit()
