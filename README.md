@@ -144,7 +144,10 @@ You can filter through the output, specify the amount of workers and a little bi
 (TLDR; same as the web_fuzzer but for subdomains)
 
 ## In work
-For now there are no modules in work check the project to do list
+### sok_scan
+It's a port scanner made in python.  
+It can scan networks/servers and output open/closed ports.  
+And it's made using only dependencies found in python3.  
 
 ## Creating modules
 You can create your own modules in whatever language you want it only needs three things to work perfectly:  
